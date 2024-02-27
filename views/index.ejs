@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="style1.css" rel="stylesheet">
+</head>
+<body>
+    <div class="search">
+        <form action="/" method="post" class="word">
+            <input type="text" name="word" required placeholder="Enter a word">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    <div>
+        <% if (locals.activity && Array.isArray(locals.activity) && locals.activity.length > 0 && locals.activity[0].word) { %>
+            <h1>Word: <span style="color: blue;"><em><%= locals.activity[0].word %></em></span></h1>
+        <% } else if (locals.error) { %>
+            <p>Error: <%= locals.error %></p>
+        <% } else { %>
+            <p>No data available.</p>
+        <% } %>
+    </div>
+    <div class="main">
+        <div class="audio">
+            <% if (locals.activity && Array.isArray(locals.activity) && locals.activity[0].phonetics && locals.activity[0].phonetics.length > 0) { %>
+                <h2>Phonetics:</h2>
+                <ul>
+                    <% locals.activity[0].phonetics.forEach(phonetic => { %>
+                        <% if (phonetic.audio) { %>
+                            <li>
+                                <audio controls>
+                                    <source src="<%= phonetic.audio %>" type="audio/mpeg">
+                                    Your browser does not support the audio tag.
+                                </audio>
+                                <p>Text: <%= phonetic.text %></p>
+                                <p>Source URL: <%= phonetic.sourceUrl %></p>
+                            </li>
+                        <% } %>
+                    <% }); %>
+                </ul>
+            <% } %>
+        </div>
+
+        <div class="meaning">
+            <% if (locals.activity && Array.isArray(locals.activity) && locals.activity[0].meanings && locals.activity[0].meanings.length > 0) { %>
+                <h2>Meanings:</h2>
+                <% locals.activity[0].meanings.forEach(meaning => { %>
+                    <h3>Part of Speech: <%= meaning.partOfSpeech %></h3>
+                    <% if (meaning.definitions && meaning.definitions.length > 0) { %>
+                        <p>Definition: <%= meaning.definitions[0].definition %></p>
+                        <% if (meaning.definitions[0].synonyms && meaning.definitions[0].synonyms.length > 0) { %>
+                            <p>Synonyms: <%= meaning.definitions[0].synonyms.join(', ') %></p>
+                        <% } %>
+                        <% if (meaning.definitions[0].antonyms && meaning.definitions[0].antonyms.length > 0) { %>
+                            <p>Antonyms: <%= meaning.definitions[0].antonyms.join(', ') %></p>
+                        <% } %>
+                    <% } %>
+                <% }); %>
+            <% } %>
+        </div>
+    </div>
+</body>
+</html>
